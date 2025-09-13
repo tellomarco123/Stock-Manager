@@ -1,5 +1,23 @@
+# 1. Forzar el uso de HTTPS
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-DirectoryIndex /Stock-Manager/frontend/public/index.html
+# 2. Prevenir el listado de directorios
+Options -Indexes
+
+# 3. Denegar el acceso a archivos de configuración y bases de datos
+<FilesMatch "\.(inc|log|ini|env|sql)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 4. Proteger contra inyecciones de código comunes (SQLi, XSS)
+RewriteCond %{QUERY_STRING} base64_encode[^(]*\([^)]*\) [OR]
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+RewriteRule .* - [F]
+
+# 5. Redirigir el acceso a la carpeta raíz al index.html
+DirectoryIndex /Stock-Manager/Frontend/Public/index.html
