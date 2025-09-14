@@ -21,8 +21,11 @@ RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
 RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
 RewriteRule .* - [F]
 
-# 5. Regla para enrutar todas las peticiones a la carpeta pública
-# La ruta es ahora RELATIVA a la ubicación del archivo .htaccess.
+# 5. Reglas para enrutar de forma segura a la carpeta pública
+# Verifica si la solicitud no es a un archivo existente o un directorio
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# Si no lo es, redirige a la carpeta FrontEnd/Public/
 RewriteRule ^(.*)$ Frontend/Public/$1 [L]
 
 # 6. Redirigir el acceso a la carpeta raíz al index.html
