@@ -19,5 +19,6 @@ RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
 RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
 RewriteRule .* - [F]
 
-# 5. Redirigir el acceso a la carpeta raíz al index.html
-DirectoryIndex /Stock-Manager/Frontend/Public/index.html
+# 5. Regla para enrutar todas las peticiones a la carpeta pública
+# Se debe colocar después de "RewriteEngine On" para que funcione
+RewriteRule ^(.*)$ /Stock-Manager/Frontend/Public/$1 [L]
