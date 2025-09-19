@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Manager - Registro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle-slider {
+            width: 44px;
+            height: 24px;
+            border-radius: 9999px;
+            background-color: #3b82f6;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+        .theme-toggle-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 9999px;
+            background-color: white;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+        .theme-toggle-circle.dark-mode { transform: translateX(20px); }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <!--  BOTON DE TEMA -->
+    <div class="absolute top-6 right-6 flex items-center space-x-2">
+        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <div id="theme-toggle" class="cursor-pointer">
+            <div class="theme-toggle-slider">
+                <div id="slider-circle" class="theme-toggle-circle"></div>
+            </div>
+        </div>
+        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-sm">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Stock Manager</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm md:text-base">Crea tu cuenta</p>
+        </div>
+
+        <form id="registroForm" action="/registro_exitoso.html" method="post">
+            <!-- Nombre -->
+            <div class="mb-4">
+                <label for="nombre" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required maxlength="40"
+                       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,40}"
+                       title="Solo letras y máximo 40 caracteres"
+                       class="shadow-sm appearance-none border rounded w-full py-2 px-3 
+                       text-gray-700 dark:text-gray-200 leading-tight focus:outline-none 
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:border-gray-600"
+                       placeholder="Ingresa tu nombre">
+            </div>
+            <!-- Apellidos -->
+            <div class="mb-4">
+                <label for="apellidos" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Apellidos</label>
+                <input type="text" id="apellidos" name="apellidos" required maxlength="40"
+                       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,40}"
+                       title="Solo letras y máximo 40 caracteres"
+                       class="shadow-sm appearance-none border rounded w-full py-2 px-3 
+                       text-gray-700 dark:text-gray-200 leading-tight focus:outline-none 
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:border-gray-600"
+                       placeholder="Ingresa tus apellidos">
+            </div>
+            <!-- Correo -->
+            <div class="mb-4">
+                <label for="correo" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Correo electrónico</label>
+                <input type="text" id="correo" name="correo" required maxlength="40"
+                       pattern="[A-Za-z0-9@._-]{1,40}"
+                       title="Solo letras, números, puntos, guiones y @ (máx. 40 caracteres)"
+                       class="shadow-sm appearance-none border rounded w-full py-2 px-3 
+                       text-gray-700 dark:text-gray-200 leading-tight focus:outline-none 
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:border-gray-600"
+                       placeholder="ejemplo@correo.com">
+            </div>
+            <!-- Contraseña -->
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Contraseña</label>
+                <input type="password" id="password" name="password" required
+                       class="shadow-sm appearance-none border rounded w-full py-2 px-3 
+                       text-gray-700 dark:text-gray-200 leading-tight focus:outline-none 
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:border-gray-600"
+                       placeholder="••••••••">
+            </div>
+            <!-- Confirmación -->
+            <div class="mb-4">
+                <label for="confirmar" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Confirmar Contraseña</label>
+                <input type="password" id="confirmar" name="confirmar" required
+                       class="shadow-sm appearance-none border rounded w-full py-2 px-3 
+                       text-gray-700 dark:text-gray-200 leading-tight focus:outline-none 
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:border-gray-600"
+                       placeholder="••••••••">
+            </div>
+            <!-- Matrícula -->
+            <div class="mb-6">
+                <label for="matricula" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Matrícula</label>
+                <input type="text" id="matricula" name="matricula" required
+                       class="shadow-sm appearance-none border rounded w-full py-2 px-3 
+                       text-gray-700 dark:text-gray-200 leading-tight focus:outline-none 
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                       dark:bg-gray-700 dark:border-gray-600"
+                       placeholder="Ingresa tu matrícula">
+            </div>
+            <div>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white 
+                    font-bold py-2 px-4 rounded-lg focus:outline-none 
+                    focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 
+                    transition duration-150 ease-in-out">
+                    Registrarse
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                ¿Ya tienes una cuenta?
+                <a href="../../frontend/public/index.html" class="font-bold text-blue-500 hover:text-blue-700">Inicia sesión</a>
+            </p>
+        </div>
+    </div>
+
+    <footer class="absolute bottom-4 text-center text-sm text-gray-500 dark:text-gray-400 w-full">
+        <p>
+            Todos los derechos de autor reservados, 2025. Stock Manager. | 
+            <a href="terminos_y_condiciones.html" class="text-blue-500 hover:text-blue-700">Términos y Condiciones</a>
+            <span class="mx-2">|</span>
+            <a href="aviso-privacidad.html" class="text-blue-500 hover:text-blue-700">Aviso de Privacidad</a>
+        </p>
+    </footer>
+
+    <!-- Script modo oscuro + validación -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const sliderCircle = document.getElementById('slider-circle');
+        const html = document.documentElement;
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+
+        function updateTheme() {
+            if (html.classList.contains('dark')) {
+                sliderCircle.classList.add('dark-mode');
+                sunIcon.classList.replace('text-yellow-500', 'text-gray-500');
+                moonIcon.classList.replace('text-gray-500', 'text-indigo-400');
+            } else {
+                sliderCircle.classList.remove('dark-mode');
+                sunIcon.classList.replace('text-gray-500', 'text-yellow-500');
+                moonIcon.classList.replace('text-indigo-400', 'text-gray-500');
+            }
+        }
+
+        // Cargar preferencia
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+        updateTheme();
+
+        // Toggle
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            updateTheme();
+        });
+
+        // Validación de contraseña
+        document.getElementById("registroForm").addEventListener("submit", function(event) {
+            const password = document.getElementById("password").value;
+            const confirmar = document.getElementById("confirmar").value;
+
+            if (password !== confirmar) {
+                event.preventDefault();
+                alert("Las contraseñas no coinciden. Vuelve a intentarlo.");
+            }
+        });
+    </script>
+</body>
+</html>
