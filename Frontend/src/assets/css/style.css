@@ -1,0 +1,28 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.theme-toggle-slider {
+    width: 44px;
+    height: 24px;
+    border-radius: 9999px;
+    background-color: #3b82f6; /* Azul de Tailwind */
+    transition: background-color 0.3s ease;
+    position: relative;
+}
+
+.theme-toggle-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 9999px;
+    background-color: white;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-circle.dark-mode {
+    transform: translateX(20px);
+}
