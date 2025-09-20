@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/Stock-Manager/favicon.ico">
+    <script>
+    // Se ejecuta inmediatamente para evitar el "destello" del tema
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    </script>
     <title>Aviso de Privacidad - Stock Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -78,7 +87,7 @@
     </div>
 
     <footer class="text-center text-sm text-gray-500 dark:text-gray-400 w-full p-4">
-        <p>Todos los derechos de autor reservados 2025 Stock Manager</p>
+        <p>Todos los derechos de autor reservados, 2025 Stock Manager</p>
     </footer>
 
     <script src="/Stock-Manager/frontend/src/assets/js/script.js"></script>
