@@ -26,3 +26,146 @@ body {
 .theme-toggle-circle.dark-mode {
     transform: translateX(20px);
 }
+
+/* === ESTILOS PARA EL NUEVO CHECKBOX ANIMADO === */
+
+.checkbox-wrapper-19 {
+    box-sizing: border-box;
+    --background-color: #fff; /* Fondo para el efecto de la marca */
+    --checkbox-height: 25px;
+}
+
+.dark .checkbox-wrapper-19 {
+    --background-color: #1f2937; /* Corresponde a dark:bg-gray-800 de Tailwind */
+}
+
+@-moz-keyframes dothabottomcheck-19 { 0% { height: 0; } 100% { height: calc(var(--checkbox-height) / 2); } }
+@-webkit-keyframes dothabottomcheck-19 { 0% { height: 0; } 100% { height: calc(var(--checkbox-height) / 2); } }
+@keyframes dothabottomcheck-19 { 0% { height: 0; } 100% { height: calc(var(--checkbox-height) / 2); } }
+@keyframes dothatopcheck-19 { 0% { height: 0; } 50% { height: 0; } 100% { height: calc(var(--checkbox-height) * 1.2); } }
+@-webkit-keyframes dothatopcheck-19 { 0% { height: 0; } 50% { height: 0; } 100% { height: calc(var(--checkbox-height) * 1.2); } }
+@-moz-keyframes dothatopcheck-19 { 0% { height: 0; } 50% { height: 0; } 100% { height: calc(var(--checkbox-height) * 1.2); } }
+
+.checkbox-wrapper-19 input[type=checkbox] {
+    display: none; /* Oculta el checkbox por defecto */
+}
+
+.checkbox-wrapper-19 .check-box {
+    height: var(--checkbox-height);
+    width: var(--checkbox-height);
+    background-color: transparent;
+    border: calc(var(--checkbox-height) * .1) solid #000; /* Borde negro por defecto */
+    border-radius: 5px;
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    transition: border-color ease 0.2s;
+    cursor: pointer;
+}
+
+.dark .checkbox-wrapper-19 .check-box {
+    border-color: #fff;
+}
+
+.checkbox-wrapper-19 .check-box::before,
+.checkbox-wrapper-19 .check-box::after {
+    box-sizing: border-box;
+    position: absolute;
+    height: 0;
+    width: calc(var(--checkbox-height) * .2);
+    background-color: #34b93d; /* Color de la marca de verificación (verde) */
+    display: inline-block;
+    transform-origin: left top;
+    border-radius: 5px;
+    content: " ";
+    transition: opacity ease 0.5;
+}
+.checkbox-wrapper-19 .check-box::before {
+    top: calc(var(--checkbox-height) * .72);
+    left: calc(var(--checkbox-height) * .41);
+    box-shadow: 0 0 0 calc(var(--checkbox-height) * .05) var(--background-color);
+    transform: rotate(-135deg);
+}
+.checkbox-wrapper-19 .check-box::after {
+    top: calc(var(--checkbox-height) * .37);
+    left: calc(var(--checkbox-height) * .05);
+    transform: rotate(-45deg);
+}
+
+.checkbox-wrapper-19 input[type=checkbox]:checked + .check-box,
+.checkbox-wrapper-19 .check-box.checked {
+    border-color: #34b93d; /* Color del borde al estar seleccionado */
+}
+.checkbox-wrapper-19 input[type=checkbox]:checked + .check-box::after,
+.checkbox-wrapper-19 .check-box.checked::after {
+    height: calc(var(--checkbox-height) / 2);
+    animation: dothabottomcheck-19 0.2s ease 0s forwards;
+}
+.checkbox-wrapper-19 input[type=checkbox]:checked + .check-box::before,
+.checkbox-wrapper-19 .check-box.checked::before {
+    height: calc(var(--checkbox-height) * 1.2);
+    animation: dothatopcheck-19 0.4s ease 0s forwards;
+}
+
+/* ================================================================ */
+/* === TEMA OSCURO PERSONALIZADO PARA FLATPICKR === */
+/* ================================================================ */
+
+.flatpickr-calendar.fp-dark {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+.fp-dark .flatpickr-month,
+.fp-dark .flatpickr-weekday,
+.fp-dark .flatpickr-weekdays {
+    color: #d1d5db;
+}
+
+.fp-dark .flatpickr-day {
+    color: #d1d5db;
+}
+
+.fp-dark .flatpickr-day:hover {
+    background: #374151;
+}
+
+.fp-dark .flatpickr-day.today {
+    border-color: #60a5fa;
+}
+
+.fp-dark .flatpickr-day.selected {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+.fp-dark .flatpickr-day.disabled {
+    color: #4b5563;
+}
+
+.fp-dark .arrowUp::after {
+    border-bottom-color: #d1d5db;
+}
+
+.fp-dark .arrowDown::after {
+    border-top-color: #d1d5db;
+}
+
+.fp-dark .flatpickr-months .flatpickr-prev-month:hover svg,
+.fp-dark .flatpickr-months .flatpickr-next-month:hover svg {
+    fill: #60a5fa;
+}
+
+/* --- AJUSTE ADICIONAL PARA LA VISTA DE MESES --- */
+.fp-dark .flatpickr-monthDropdown-months {
+    background: #1f2937 !important; /* <- SE AÑADIÓ !important AQUÍ */
+}
+
+.fp-dark .flatpickr-monthDropdown-month {
+    color: #d1d5db;
+}
+
+.fp-dark .flatpickr-monthDropdown-month:hover {
+    background: #374151;
+}

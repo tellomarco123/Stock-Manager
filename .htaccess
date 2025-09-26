@@ -1,32 +1,38 @@
-# Habilitar el motor de reescritura una sola vez
+# Habilitar el motor de reescritura
 RewriteEngine On
 
-# 1. Forzar el uso de HTTPS
+# --- PASO 1: DEFINIR LA BASE DE LA URL ---
+# Esto es crucial para proyectos en subdirectorios.
+# Le dice a Apache que todas las reglas relativas parten de /Stock-Manager/
+RewriteBase /Stock-Manager/
+
+# =======================================================
+# SECCIÓN DE SEGURIDAD (Sin cambios)
+# =======================================================
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-# 2. Prevenir el listado de directorios
 Options -Indexes
-
-# 3. Denegar el acceso a archivos de configuración y bases de datos
 <FilesMatch "\.(inc|log|ini|env|sql)$">
     Order allow,deny
     Deny from all
 </FilesMatch>
-
-# 4. Proteger contra inyecciones de código comunes (SQLi, XSS)
 RewriteCond %{QUERY_STRING} base64_encode[^(]*\([^)]*\) [OR]
 RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
 RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
 RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
 RewriteRule .* - [F]
 
-# 5. Reglas para enrutar de forma segura a la carpeta pública
-# Verifica si la solicitud no es a un archivo existente o un directorio
+# =======================================================
+# SECCIÓN DE ENRUTAMIENTO (Versión final para subdirectorio)
+# =======================================================
+
+# 1. Regla explícita para la página de inicio
+# Cuando se solicita la raíz del proyecto, sirve directamente el index.php de Public.
+RewriteRule ^$ Frontend/Public/index.php [L]
+
+# 2. Regla para todas las demás peticiones
+# Si la petición (ej. /registro.php) no es para un archivo o directorio que ya existe,
+# reescríbela para que se busque dentro de la carpeta /Frontend/Public/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-# Si no lo es, redirige a la carpeta FrontEnd/Public/
 RewriteRule ^(.*)$ Frontend/Public/$1 [L]
-
-# 6. Redirigir el acceso a la carpeta raíz al index.html
-DirectoryIndex /Stock-Manager/Frontend/Public/index.html
