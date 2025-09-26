@@ -78,6 +78,6 @@
 </div>
 
 <?php 
-    // Incluye el pie de página reutilizable
+    
     include $_SERVER['DOCUMENT_ROOT'] . '/Stock-Manager/Frontend/src/assets/templates/footer.php'; 
 ?>

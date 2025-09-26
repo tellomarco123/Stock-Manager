@@ -1,38 +1,56 @@
 # Habilitar el motor de reescritura
 RewriteEngine On
 
-# --- PASO 1: DEFINIR LA BASE DE LA URL ---
-# Esto es crucial para proyectos en subdirectorios.
-# Le dice a Apache que todas las reglas relativas parten de /Stock-Manager/
+# --- BASE DE LA URL PARA SUBDIRECTORIO ---
 RewriteBase /Stock-Manager/
 
 # =======================================================
-# SECCIÓN DE SEGURIDAD (Sin cambios)
+# SECCIÓN DE SEGURIDAD MEJORADA
 # =======================================================
+
+# 1. Forzar HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2. Prevenir listado de directorios
 Options -Indexes
-<FilesMatch "\.(inc|log|ini|env|sql)$">
+
+# 3. Ocultar la versión del servidor en los errores
+ServerSignature Off
+
+# 4. Proteger archivos sensibles (incluyendo este mismo .htaccess)
+<FilesMatch "^\.|\.(inc|log|ini|env|sql)$">
     Order allow,deny
     Deny from all
 </FilesMatch>
+
+# 5. Protección básica contra inyecciones de código (WAF)
 RewriteCond %{QUERY_STRING} base64_encode[^(]*\([^)]*\) [OR]
 RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
 RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
 RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
 RewriteRule .* - [F]
 
+# 6. Añadir Encabezados de Seguridad HTTP
+<IfModule mod_headers.c>
+    # Protección contra Clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    # Protección contra "MIME sniffing"
+    Header always set X-Content-Type-Options "nosniff"
+    # Control sobre la información de referencia enviada a otros sitios
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # Filtro XSS para navegadores antiguos
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
 # =======================================================
-# SECCIÓN DE ENRUTAMIENTO (Versión final para subdirectorio)
+# SECCIÓN DE ENRUTAMIENTO (Sin cambios)
 # =======================================================
 
 # 1. Regla explícita para la página de inicio
-# Cuando se solicita la raíz del proyecto, sirve directamente el index.php de Public.
 RewriteRule ^$ Frontend/Public/index.php [L]
 
 # 2. Regla para todas las demás peticiones
-# Si la petición (ej. /registro.php) no es para un archivo o directorio que ya existe,
-# reescríbela para que se busque dentro de la carpeta /Frontend/Public/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ Frontend/Public/$1 [L]

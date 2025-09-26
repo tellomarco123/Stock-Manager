@@ -73,5 +73,9 @@
 </div>
 
 <?php 
-    // 4. Incluye el pie de página reutilizable
-    include $_SERVER['DOCUMENT_ROOT'] . '/Stock-Manager/Frontend/src/assets/templates/footer.php';
+    // Le indicamos al footer que NO muestre los enlaces
+    $showFooterLinks = false; 
+    
+    // Incluye el pie de página
+    include $_SERVER['DOCUMENT_ROOT'] . '/Stock-Manager/Frontend/src/assets/templates/footer.php'; 
+?>
