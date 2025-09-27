@@ -1,32 +1,56 @@
-# Habilitar el motor de reescritura una sola vez
+# Habilitar el motor de reescritura
 RewriteEngine On
 
-# 1. Forzar el uso de HTTPS
+# --- BASE DE LA URL PARA SUBDIRECTORIO ---
+RewriteBase /Stock-Manager/
+
+# =======================================================
+# SECCIÓN DE SEGURIDAD MEJORADA
+# =======================================================
+
+# 1. Forzar HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# 2. Prevenir el listado de directorios
+# 2. Prevenir listado de directorios
 Options -Indexes
 
-# 3. Denegar el acceso a archivos de configuración y bases de datos
-<FilesMatch "\.(inc|log|ini|env|sql)$">
+# 3. Ocultar la versión del servidor en los errores
+ServerSignature Off
+
+# 4. Proteger archivos sensibles (incluyendo este mismo .htaccess)
+<FilesMatch "^\.|\.(inc|log|ini|env|sql)$">
     Order allow,deny
     Deny from all
 </FilesMatch>
 
-# 4. Proteger contra inyecciones de código comunes (SQLi, XSS)
+# 5. Protección básica contra inyecciones de código (WAF)
 RewriteCond %{QUERY_STRING} base64_encode[^(]*\([^)]*\) [OR]
 RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
 RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
 RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
 RewriteRule .* - [F]
 
-# 5. Reglas para enrutar de forma segura a la carpeta pública
-# Verifica si la solicitud no es a un archivo existente o un directorio
+# 6. Añadir Encabezados de Seguridad HTTP
+<IfModule mod_headers.c>
+    # Protección contra Clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    # Protección contra "MIME sniffing"
+    Header always set X-Content-Type-Options "nosniff"
+    # Control sobre la información de referencia enviada a otros sitios
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # Filtro XSS para navegadores antiguos
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# =======================================================
+# SECCIÓN DE ENRUTAMIENTO (Sin cambios)
+# =======================================================
+
+# 1. Regla explícita para la página de inicio
+RewriteRule ^$ Frontend/Public/index.php [L]
+
+# 2. Regla para todas las demás peticiones
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-# Si no lo es, redirige a la carpeta FrontEnd/Public/
 RewriteRule ^(.*)$ Frontend/Public/$1 [L]
-
-# 6. Redirigir el acceso a la carpeta raíz al index.html
-DirectoryIndex /Stock-Manager/Frontend/Public/index.html
