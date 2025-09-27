@@ -36,7 +36,7 @@
         </form>
         
         <div class="mt-4 text-center">
-            <a href="#" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-700">
+            <a href="/Stock-Manager/frontend/public/recovery_pass.php" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-700">
                 ¿Olvidaste tu contraseña?
             </a>
             <p class="text-sm mt-2 text-gray-500 dark:text-gray-400">
