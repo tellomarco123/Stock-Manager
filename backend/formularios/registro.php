@@ -33,7 +33,7 @@
             </div>
             <div class="mb-4">
                 <label for="fechaNacimiento" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Fecha de Nacimiento</label>
-                <input type="date" id="fechaNacimiento" name="fechaNacimiento" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                <input type="date" id="fechaNacimiento" name="fechaNacimiento" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600" placeholder="Ingresa tu fecha...">
 
             </div>
             <div class="mb-4">
