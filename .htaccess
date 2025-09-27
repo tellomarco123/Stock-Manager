@@ -1,16 +1,18 @@
+# ===============================
 # Habilitar el motor de reescritura
+# ===============================
 RewriteEngine On
 
-# --- BASE DE LA URL PARA SUBDIRECTORIO ---
+# Base de la URL para subdirectorio
 RewriteBase /Stock-Manager/
 
 # =======================================================
 # SECCIÓN DE SEGURIDAD MEJORADA
 # =======================================================
 
-# 1. Forzar HTTPS
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# 1. Forzar HTTPS (descomentar solo si hay certificado)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # 2. Prevenir listado de directorios
 Options -Indexes
@@ -18,7 +20,7 @@ Options -Indexes
 # 3. Ocultar la versión del servidor en los errores
 ServerSignature Off
 
-# 4. Proteger archivos sensibles (incluyendo este mismo .htaccess)
+# 4. Proteger archivos sensibles
 <FilesMatch "^\.|\.(inc|log|ini|env|sql)$">
     Order allow,deny
     Deny from all
@@ -31,26 +33,25 @@ RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
 RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
 RewriteRule .* - [F]
 
-# 6. Añadir Encabezados de Seguridad HTTP
+# 6. Encabezados de seguridad HTTP
 <IfModule mod_headers.c>
-    # Protección contra Clickjacking
     Header always set X-Frame-Options "SAMEORIGIN"
-    # Protección contra "MIME sniffing"
     Header always set X-Content-Type-Options "nosniff"
-    # Control sobre la información de referencia enviada a otros sitios
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    # Filtro XSS para navegadores antiguos
     Header always set X-XSS-Protection "1; mode=block"
 </IfModule>
 
 # =======================================================
-# SECCIÓN DE ENRUTAMIENTO (Sin cambios)
+# SECCIÓN DE ENRUTAMIENTO
 # =======================================================
 
 # 1. Regla explícita para la página de inicio
 RewriteRule ^$ Frontend/Public/index.php [L]
 
-# 2. Regla para todas las demás peticiones
+# 2. Evitar redirigir cualquier cosa dentro del backend
+RewriteCond %{REQUEST_URI} !^/Stock-Manager/backend/.*$
+
+# 3. Redirigir todas las demás peticiones al frontend
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ Frontend/Public/$1 [L]

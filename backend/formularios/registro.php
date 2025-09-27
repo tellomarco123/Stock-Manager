@@ -18,7 +18,7 @@
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Stock Manager</h1>
             <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm md:text-base">Crea tu cuenta</p>
         </div>
-        <form id="registroForm" method="post">
+        <form id="registroForm" action="./backend/conexiones/insert_usuarios_registro.php" method="post">
             <div class="mb-4">
                 <label for="nombres" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Nombre(s)</label>
                 <input type="text" id="nombres" name="nombres" required maxlength="40" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,40}" title="Solo letras y máximo 40 caracteres" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600" placeholder="Nombre(s)">
@@ -33,7 +33,8 @@
             </div>
             <div class="mb-4">
                 <label for="fechaNacimiento" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Fecha de Nacimiento</label>
-                <input type="text" id="fechaNacimiento" name="fechaNacimiento" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600" placeholder="Selecciona tu fecha...">
+                <input type="date" id="fechaNacimiento" name="fechaNacimiento" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600">
+
             </div>
             <div class="mb-4">
                 <label for="correo" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Correo electrónico</label>

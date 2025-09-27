@@ -1,52 +1,63 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+header('Content-Type: application/json');
 
-include("conexion_usuarios.php");
+// Conexión a la base de datos
+include __DIR__ . '/conexion_usuarios.php';
 
-// Recibir y sanitizar datos
-$nombre     = trim($_POST['nombre'] ?? '');
-$apellidos  = trim($_POST['apellidos'] ?? '');
-$correo     = trim($_POST['correo'] ?? '');
-$password   = $_POST['password'] ?? '';
-$confirmar  = $_POST['confirmar'] ?? '';
-$matricula  = trim($_POST['matricula'] ?? '');
+// Función de respuesta JSON
+function responder($status, $message) {
+    echo json_encode(['status' => $status, 'message' => $message]);
+    exit;
+}
 
-// Validaciones
-if (!$nombre || !$apellidos || !$correo || !$password || !$confirmar || !$matricula) die("Error: Todos los campos son obligatorios.");
-if (!preg_match("/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,40}$/", $nombre)) die("Error: Nombre inválido.");
-if (!preg_match("/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,40}$/", $apellidos)) die("Error: Apellidos inválidos.");
-if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) die("Error: Correo inválido.");
-if (strlen($password) < 8) die("Error: La contraseña debe tener al menos 8 caracteres.");
-if ($password !== $confirmar) die("Error: Las contraseñas no coinciden.");
+// Recibir datos del formulario y limpiar espacios
+$nombre           = trim($_POST['nombres'] ?? '');
+$apellidoPaterno  = trim($_POST['apellidoPaterno'] ?? '');
+$apellidoMaterno  = trim($_POST['apellidoMaterno'] ?? '');
+$fechaNacimiento  = trim($_POST['fechaNacimiento'] ?? '');
+$correo           = trim($_POST['correo'] ?? '');
+$password         = $_POST['password'] ?? '';
+$confirmar        = $_POST['confirmar'] ?? '';
+$matricula        = trim($_POST['matricula'] ?? '');
 
-// Hash de contraseña
-$passwordHash = password_hash($password, PASSWORD_DEFAULT);
+// Validaciones básicas
+if (!$nombre || !$apellidoPaterno || !$fechaNacimiento || !$correo || !$password || !$confirmar || !$matricula) {
+    responder('error', 'Faltan campos obligatorios.');
+}
+
+if (!preg_match("/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,40}$/", $nombre)) responder('error', 'Nombre inválido.');
+if (!preg_match("/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,40}$/", $apellidoPaterno)) responder('error', 'Apellido Paterno inválido.');
+if ($apellidoMaterno && !preg_match("/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{1,40}$/", $apellidoMaterno)) responder('error', 'Apellido Materno inválido.');
+if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) responder('error', 'Correo inválido.');
+if (strlen($password) < 8) responder('error', 'La contraseña debe tener al menos 8 caracteres.');
+if ($password !== $confirmar) responder('error', 'Las contraseñas no coinciden.');
+if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $fechaNacimiento)) responder('error', 'Fecha inválida (YYYY-MM-DD).');
+
+$passwordHash      = password_hash($password, PASSWORD_DEFAULT);
+$apellidoMaternoDB = empty($apellidoMaterno) ? null : $apellidoMaterno;
 
 try {
-    // Verificar duplicados
+    // Verificar si el correo o la matrícula ya existen
     $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = :email OR matricula = :matricula");
     $stmt->execute([':email' => $correo, ':matricula' => $matricula]);
-    if ($stmt->rowCount() > 0) die("Error: El correo o la matrícula ya están registrados.");
+    if ($stmt->rowCount() > 0) responder('error', 'El correo o la matrícula ya están registrados.');
 
-    // Insertar usuario
+    // Insertar usuario en la tabla
     $stmt = $conn->prepare("
-        INSERT INTO users (first_name, last_name, email, password, matricula)
-        VALUES (:first_name, :last_name, :email, :password, :matricula)
+        INSERT INTO users (first_name, last_name_1, last_name_2, birth_date, email, password, matricula)
+        VALUES (:first_name, :last_name_1, :last_name_2, :birth_date, :email, :password, :matricula)
     ");
     $stmt->execute([
-        ':first_name' => $nombre,
-        ':last_name'  => $apellidos,
-        ':email'      => $correo,
-        ':password'   => $passwordHash,
-        ':matricula'  => $matricula
+        ':first_name'  => $nombre,
+        ':last_name_1' => $apellidoPaterno,
+        ':last_name_2' => $apellidoMaternoDB,
+        ':birth_date'  => $fechaNacimiento,
+        ':email'       => $correo,
+        ':password'    => $passwordHash,
+        ':matricula'   => $matricula
     ]);
 
-    // Redirigir automáticamente al login
-    header("Location: ../../frontend/public/index.html");
-    exit;
-
+    responder('success', '¡Registro exitoso!');
 } catch (PDOException $e) {
-    die("Error en la base de datos: " . $e->getMessage());
+    responder('error', 'Error en la base de datos: ' . $e->getMessage());
 }

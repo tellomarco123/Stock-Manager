@@ -39,40 +39,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- SECCIÓN 2: CÓDIGO DEL CALENDARIO Y FORMULARIO ---
-    
-    // --- INICIALIZACIÓN DEL CALENDARIO (FLATPICKR) ---
+    // --- SECCIÓN 2: CÓDIGO DEL CALENDARIO ---
     const hoy = new Date();
     calendarInstance = flatpickr("#fechaNacimiento", {
         locale: "es",
         altInput: true,
         altFormat: "F j, Y",
         dateFormat: "Y-m-d",
-        
-        // --- FILTROS DE FECHA AÑADIDOS ---
-        maxDate: new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate()), // Edad mínima de 18 años
-        minDate: new Date(hoy.getFullYear() - 110, hoy.getMonth(), hoy.getDate()), // Edad máxima de 110 años
-        // ------------------------------------
-
+        maxDate: new Date(hoy.getFullYear() - 18, hoy.getMonth(), hoy.getDate()),
+        minDate: new Date(hoy.getFullYear() - 110, hoy.getMonth(), hoy.getDate()),
         disableMobile: "true"
     });
 
     updateTheme();
-    
-    // --- LÓGICA DEL FORMULARIO DE REGISTRO ---
+
+    // --- SECCIÓN 3: LÓGICA DEL FORMULARIO CON AJAX ---
     const registroForm = document.getElementById('registroForm');
     if (registroForm) {
         registroForm.addEventListener('submit', function(event) {
             event.preventDefault();
+
             const fechaNacimientoInput = document.getElementById('fechaNacimiento');
-            
             if (!fechaNacimientoInput.value) {
                 mostrarError("Por favor, selecciona tu fecha de nacimiento.");
                 return;
             }
 
-            // La validación de edad en JS sigue siendo una buena segunda barrera,
-            // aunque el calendario ya no permite seleccionar fechas inválidas.
             const fechaNacimiento = new Date(fechaNacimientoInput.value);
             const fechaMinima = new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate());
 
@@ -81,12 +73,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            console.log("Validación de edad exitosa.");
-            mostrarExito("¡Registro exitoso! (Simulación)");
+            // --- Enviar datos por AJAX ---
+            const formData = new FormData(this);
+
+            fetch('/Stock-Manager/backend/conexiones/insert_usuarios_registro.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    mostrarExito(data.message);
+                    // Redirigir al login después de 2 segundos
+                    setTimeout(() => { window.location.href = '/Stock-Manager/'; }, 2000);
+                } else {
+                    mostrarError(data.message);
+                }
+            })
+            .catch(err => mostrarError('Ocurrió un error: ' + err));
         });
     }
 
-    // --- FUNCIONES DE ALERTA (SIN CAMBIOS) ---
+    // --- FUNCIONES DE ALERTA ---
     const alertThemes = {
         light: { background: '#fff', color: '#374151' },
         dark: { background: '#1f2937', color: '#d1d5db' }
