@@ -1,4 +1,5 @@
-<?php 
+  <?php 
+
     // 1. Define el título específico para esta página
     $pageTitle = "Stock Manager - Iniciar Sesión"; 
 
@@ -19,7 +20,7 @@
             <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm md:text-base">Ingrese sus datos de acceso</p>
         </div>
         
-        <form action="/dashboard.php" method="post">
+        <form action="/Stock-Manager/backend/conexiones/conexion_login.php" method="post">
             <div class="mb-4">
                 <label for="username" class="block text-gray-700 dark:text-gray-300 text-sm font-semibold mb-2">Usuario</label>
                 <input type="text" id="username" name="username" required class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600" placeholder="Ingresa tu usuario">
