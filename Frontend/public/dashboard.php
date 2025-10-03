@@ -70,7 +70,7 @@
                     <span class="font-semibold" x-text="currentUser.email"></span>
                     (<span x-text="currentUser.role"></span>)
                 </div>
-                <a href="/Stock-Manager/" class="text-blue-500 hover:text-blue-700 font-semibold">Cerrar Sesión</a>
+                <a href="/Stock-Manager/backend/conexiones/logout.php" class="text-blue-500 hover:text-blue-700 font-semibold">Cerrar Sesión</a>
             </div>
         </header>
         <div x-show="activeSection === 'usuarios'" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
