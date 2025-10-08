@@ -37,15 +37,37 @@ $passwordHash      = password_hash($password, PASSWORD_DEFAULT);
 $apellidoMaternoDB = empty($apellidoMaterno) ? null : $apellidoMaterno;
 
 try {
-    // Verificar si el correo o la matrícula ya existen
+    //Verificar si la matrícula existe en la tabla matriculas
+    $stmt = $conn->prepare("
+        SELECT nombres, apellido, segundo_apellido, correo, rol_usuario 
+        FROM matriculas 
+        WHERE matricula = :matricula
+    ");
+    $stmt->execute([':matricula' => $matricula]);
+    $registroMatricula = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$registroMatricula) {
+        responder('error', 'La matrícula no existe en el sistema.');
+    }
+
+    //Verificar que los datos coincidan con los de la tabla matriculas
+    $coincideNombre  = (strcasecmp(trim($registroMatricula['nombres']), $nombre) === 0);
+    $coincideApellido = (strcasecmp(trim($registroMatricula['apellido']), $apellidoPaterno) === 0);
+    $coincideCorreo   = (strcasecmp(trim($registroMatricula['correo']), $correo) === 0);
+
+    if (!$coincideNombre || !$coincideApellido || !$coincideCorreo) {
+        responder('error', 'Los datos no coinciden con la matrícula registrada.');
+    }
+
+    // Verificar si el correo o la matrícula ya están registrados en users
     $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = :email OR matricula = :matricula");
     $stmt->execute([':email' => $correo, ':matricula' => $matricula]);
     if ($stmt->rowCount() > 0) responder('error', 'El correo o la matrícula ya están registrados.');
 
-    // Insertar usuario en la tabla
+    // Insertar usuario nuevo en users con su rol de la tabla matriculas
     $stmt = $conn->prepare("
-        INSERT INTO users (first_name, last_name_1, last_name_2, birth_date, email, password, matricula)
-        VALUES (:first_name, :last_name_1, :last_name_2, :birth_date, :email, :password, :matricula)
+        INSERT INTO users (first_name, last_name_1, last_name_2, birth_date, email, password, matricula, rol_usuario)
+        VALUES (:first_name, :last_name_1, :last_name_2, :birth_date, :email, :password, :matricula, :rol_usuario)
     ");
     $stmt->execute([
         ':first_name'  => $nombre,
@@ -54,10 +76,11 @@ try {
         ':birth_date'  => $fechaNacimiento,
         ':email'       => $correo,
         ':password'    => $passwordHash,
-        ':matricula'   => $matricula
+        ':matricula'   => $matricula,
+        ':rol_usuario' => $registroMatricula['rol_usuario']
     ]);
 
-    responder('success', '¡Registro exitoso!');
+    responder('success', '¡Registro exitoso! Tu cuenta ha sido creada.');
 } catch (PDOException $e) {
     responder('error', 'Error en la base de datos: ' . $e->getMessage());
 }
