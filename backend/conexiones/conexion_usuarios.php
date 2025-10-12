@@ -2,7 +2,7 @@
 $host = "localhost";
 $db   = "stock_manager";
 $user = "root";
-$pass = "";
+$pass = "Root2xamp$";
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
